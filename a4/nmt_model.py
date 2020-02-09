@@ -264,10 +264,10 @@ class NMT(nn.Module):
         Y = torch.zeros([tgt_len, batch_size, embed_size])
         for Y_t in torch.split(Y, split_size_or_sections=1, dim=0):
             Y_t = torch.squeeze(Y_t, dim=0)
-            Ybar_t = torch.cat([Y_t, o_prev], dim = 1)
+            Ybar_t = torch.cat([Y_t.to(self.device), o_prev.to(self.device)], dim = 1)
             dec_state, o_t, e_t = self.step(Ybar_t, dec_state, enc_hiddens, enc_hiddens_proj, enc_masks)
             combined_outputs.append(o_t)
-            o_prev = o_t
+            o_prev = o_t.to(self.device)
         
         
         combined_outputs = torch.stack(combined_outputs, dim=0)
